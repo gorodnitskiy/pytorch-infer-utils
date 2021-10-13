@@ -1,0 +1,47 @@
+default_shapes: [1, 3, 224, 224]
+onnx_export_params:
+  # store the trained parameter weights inside the model file
+  export_params: True
+  # whether to execute constant folding for optimization
+  do_constant_folding: True
+  # the model's input names
+  input_names: ["input"]
+  # the model's output names
+  output_names: ["output"]
+  # the ONNX version to export the model to
+  # 11 is required fot onnx_tensorrt and good work for onnxruntime
+  opset_version: 11
+onnx_optimize_params:
+  fixed_point: False
+  passes: [
+    # via get_available_passes method
+    "eliminate_deadend",
+    "eliminate_duplicate_initializer",
+    "eliminate_identity",
+    "eliminate_if_with_const_cond",
+    "eliminate_nop_cast",
+    "eliminate_nop_dropout",
+    "eliminate_nop_flatten",
+    "eliminate_nop_monotone_argmax",
+    "eliminate_nop_pad",
+    "eliminate_nop_transpose",
+    "eliminate_unused_initializer",
+    "extract_constant_to_initializer",
+    "fuse_add_bias_into_conv",
+    "fuse_bn_into_conv",
+    "fuse_consecutive_concats",
+    "fuse_consecutive_log_softmax",
+    "fuse_consecutive_reduce_unsqueeze",
+    "fuse_consecutive_squeezes",
+    # Disable the fuse_consecutive_transposes
+    # pass if you have unpatched onnx
+    # (see https://github.com/onnx/onnx/pull/2471/files)
+    "fuse_consecutive_transposes",
+    "fuse_matmul_add_bias_into_gemm",
+    "fuse_pad_into_conv",
+    "fuse_transpose_into_gemm",
+    "lift_lexical_references",
+    "nop",
+    # "split_init",
+    # "split_predict"
+  ]
