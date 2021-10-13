@@ -1,0 +1,44 @@
+# Project
+pre_commit_hooks.sh
+**/.ipynb_checkpoints/
+**/*.ipynb
+test/
+
+# IntelliJ
+.idea/
+*.iml
+out/
+.idea_modules/
+
+# macOS
+*.DS_Store
+.AppleDouble
+.LSOverride
+.Trashes
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# pytest
+.pytest_cache/
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST

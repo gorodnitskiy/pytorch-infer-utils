@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.black]
+line-length = 79
+color = true
+target-version = ["py36", "py37", "py38"]
+verbose = true
+
+[tool.isort]
+line_length = 79
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+color_output = true
+follow_links = false
+profile = "black"
+py_version = "38"
+skip_gitignore = true
+verbose = true
