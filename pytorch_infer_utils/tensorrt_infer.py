@@ -102,6 +102,20 @@ class TRTWrapper:
         inter_op_num_threads: Optional[int] = 0,
         fp16_mode: bool = False,
     ) -> None:
+        """
+        :param onnx_path: onnx-file path
+        :param trt_path: onnx-file path
+        :param gpu_device_id: gpu device id
+        :param intra_op_num_threads: ort_session_options.intra_op_num_threads
+        :param inter_op_num_threads: ort_session_options.inter_op_num_threads
+        :param fp16_mode: use fp16_mode if class initializes only with onnx_path on GPU
+        :type onnx_path: str
+        :type trt_path: str
+        :type gpu_device_id: int
+        :type intra_op_num_threads: int
+        :type inter_op_num_threads: int
+        :type fp16_mode: bool
+        """
         if gpu_device_id is None:
             import onnxruntime
 
@@ -123,6 +137,7 @@ class TRTWrapper:
 
     def run(self, img: Any) -> Any:
         """
+        run example:
         img = self._process_img_(img)
         if self.is_using_tensorrt:
             preds = self.trt_session.run(img)

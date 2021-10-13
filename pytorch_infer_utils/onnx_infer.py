@@ -9,6 +9,16 @@ class ONNXWrapper:
         intra_op_num_threads: Optional[int] = 0,
         inter_op_num_threads: Optional[int] = 0,
     ) -> None:
+        """
+        :param onnx_path: onnx-file path
+        :param gpu_device_id: gpu device id
+        :param intra_op_num_threads: ort_session_options.intra_op_num_threads
+        :param inter_op_num_threads: ort_session_options.inter_op_num_threads
+        :type onnx_path: str
+        :type gpu_device_id: int
+        :type intra_op_num_threads: int
+        :type inter_op_num_threads: int
+        """
         if gpu_device_id is None:
             import onnxruntime
 
@@ -35,6 +45,7 @@ class ONNXWrapper:
 
     def run(self, img: Any) -> Any:
         """
+        run example:
         img = self._process_img_(img)
         if self.is_using_tensorrt:
             preds = self.engine.run(img)
