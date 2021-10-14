@@ -50,6 +50,7 @@ def report_time_decorator(
                 result = func(args, **kwargs)
             time_reporter.time(process_name, warmup, verbose=True)
             return result
+
         return wrapper
 
     return decorator

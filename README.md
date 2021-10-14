@@ -9,7 +9,7 @@ and also gives some base interface for model inference.
   Use ```load_weights_rounded_model``` func to load model with weights rounding:
   ```
   from pytorch_infer_utils import load_weights_rounded_model
-  
+
   model = ModelClass()
   load_weights_rounded_model(
       model,
@@ -20,13 +20,13 @@ and also gives some base interface for model inference.
 - Use ```ONNXExporter.torch2onnx``` method to export pytorch model to ONNX:
   ```
   from pytorch_infer_utils import ONNXExporter
-  
+
   model = ModelClass()
   model.load_state_dict(
       torch.load("/path/to/model_state_dict", map_location=map_location)
   )
   model.eval()
-  
+
   exporter = ONNXExporter()
   input_shapes = [-1, 3, 224, 224] # -1 means that is dynamic shape
   exporter.torch2onnx(model, "/path/to/model.onnx", input_shapes)
@@ -35,7 +35,7 @@ and also gives some base interface for model inference.
   via [onnxoptimizer](https://github.com/onnx/optimizer):
   ```
   from pytorch_infer_utils import ONNXExporter
-  
+
   exporter = ONNXExporter()
   exporter.optimize_onnx("/path/to/model.onnx", "/path/to/optimized_model.onnx")
   ```
@@ -44,20 +44,20 @@ and also gives some base interface for model inference.
   Be careful with onnx-simplifier not to lose dynamic shapes.
   ```
   from pytorch_infer_utils import ONNXExporter
-  
+
   exporter = ONNXExporter()
   exporter.optimize_onnx_sim("/path/to/model.onnx", "/path/to/optimized_model.onnx")
   ```
 - Also, a method combined the above methods is available ```ONNXExporter.torch2optimized_onnx```:
   ```
   from pytorch_infer_utils import ONNXExporter
-  
+
   model = ModelClass()
   model.load_state_dict(
       torch.load("/path/to/model_state_dict", map_location=map_location)
   )
   model.eval()
-  
+
   exporter = ONNXExporter()
   input_shapes = [-1, 3, -1, -1] # -1 means that is dynamic shape
   exporter.torch2optimized_onnx(model, "/path/to/model.onnx", input_shapes)
@@ -92,7 +92,7 @@ and also gives some base interface for model inference.
 - Use ```TRTEngineBuilder.build_engine``` method to export ONNX to TensorRT:
   ```
   from pytorch_infer_utils import TRTEngineBuilder
-  
+
   exporter = TRTEngineBuilder()
   # get engine by itself
   engine = exporter.build_engine("/path/to/model.onnx")
@@ -102,7 +102,7 @@ and also gives some base interface for model inference.
 - fp16_mode is available:
   ```
   from pytorch_infer_utils import TRTEngineBuilder
-  
+
   exporter = TRTEngineBuilder()
   engine = exporter.build_engine("/path/to/model.onnx", fp16_mode=True)
   ```
@@ -111,7 +111,7 @@ and also gives some base interface for model inference.
   ```max_image_shape``` - max image size as [C, H, W] to allocate correct size of memory:
   ```
   from pytorch_infer_utils import TRTEngineBuilder
-  
+
   exporter = TRTEngineBuilder()
   engine = exporter.build_engine(
       "/path/to/model.onnx",
@@ -244,7 +244,7 @@ and also gives some base interface for model inference.
   else:
       ort_inputs = {self.ort_session.get_inputs()[0].name: img}
       preds = self.ort_session.run(None, ort_inputs)
-    
+
   preds = self._process_preds_(preds)
   ```
 
