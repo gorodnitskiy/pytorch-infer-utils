@@ -273,5 +273,5 @@ and also gives some base interface for model inference.
 ## To install
 ```
 git clone https://github.com/gorodnitskiy/pytorch_infer_utils.git
-pip install /path/to/pytorch_infer_utils/
+pip isntall /path/to/pytorch_infer_utils/
 ```
