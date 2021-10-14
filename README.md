@@ -4,6 +4,12 @@
 This package proposes simplified exporting pytorch models to ONNX and TensorRT,
 and also gives some base interface for model inference.
 
+## To install
+```
+git clone https://github.com/gorodnitskiy/pytorch_infer_utils.git
+pip install /path/to/pytorch_infer_utils/
+```
+
 ## Export PyTorch model to ONNX
 - Check model for denormal weights to achieve better performance.
   Use ```load_weights_rounded_model``` func to load model with weights rounding:
@@ -268,10 +274,3 @@ and also gives some base interface for model inference.
   cd ..
   rm -rf onnx-tensorrt
   ```
-
-
-## To install
-```
-git clone https://github.com/gorodnitskiy/pytorch_infer_utils.git
-pip install /path/to/pytorch_infer_utils/
-```
