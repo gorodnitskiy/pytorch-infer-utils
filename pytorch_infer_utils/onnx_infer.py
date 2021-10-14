@@ -10,10 +10,12 @@ class ONNXWrapper:
         inter_op_num_threads: Optional[int] = 0,
     ) -> None:
         """
-        :param onnx_path: onnx-file path
-        :param gpu_device_id: gpu device id
-        :param intra_op_num_threads: ort_session_options.intra_op_num_threads
-        :param inter_op_num_threads: ort_session_options.inter_op_num_threads
+        :param onnx_path: onnx-file path, required
+        :param gpu_device_id: gpu device id to use, default = 0
+        :param intra_op_num_threads: ort_session_options.intra_op_num_threads,
+            to let onnxruntime choose by itself is required 0, default = 0
+        :param inter_op_num_threads: ort_session_options.inter_op_num_threads,
+            to let onnxruntime choose by itself is required 0, default = 0
         :type onnx_path: str
         :type gpu_device_id: int
         :type intra_op_num_threads: int

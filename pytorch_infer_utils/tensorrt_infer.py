@@ -103,12 +103,15 @@ class TRTWrapper:
         fp16_mode: bool = False,
     ) -> None:
         """
-        :param onnx_path: onnx-file path
-        :param trt_path: onnx-file path
-        :param gpu_device_id: gpu device id
-        :param intra_op_num_threads: ort_session_options.intra_op_num_threads
-        :param inter_op_num_threads: ort_session_options.inter_op_num_threads
-        :param fp16_mode: use fp16_mode if class initializes only with onnx_path on GPU
+        :param onnx_path: onnx-file path, default = None
+        :param trt_path: onnx-file path, default = None
+        :param gpu_device_id: gpu device id to use, default = 0
+        :param intra_op_num_threads: ort_session_options.intra_op_num_threads,
+            to let onnxruntime choose by itself is required 0, default = 0
+        :param inter_op_num_threads: ort_session_options.inter_op_num_threads,
+            to let onnxruntime choose by itself is required 0, default = 0
+        :param fp16_mode: use fp16_mode if class initializes only with
+            onnx_path on GPU, default = False
         :type onnx_path: str
         :type trt_path: str
         :type gpu_device_id: int
