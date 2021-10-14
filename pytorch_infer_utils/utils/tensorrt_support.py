@@ -1,6 +1,6 @@
 import os
 from collections.abc import Iterator
-from typing import Any, Callable, List, Optional, Tuple, Union
+from typing import Any, Callable, List, Optional, Tuple
 
 import cv2
 import numpy as np
@@ -8,6 +8,13 @@ import pycuda.autoinit
 import pycuda.driver as cuda
 import tensorrt as trt
 from PIL import Image
+
+
+def check_tensorrt_health() -> None:
+    import tensorrt as trt
+
+    print(f"TensorRT version: {trt.__version__}")
+    assert trt.Builder(trt.Logger()), "Tensorrt is not valid."
 
 
 def read_img(img_path: str) -> np.ndarray:

@@ -6,18 +6,11 @@ import tensorrt as trt
 import torch
 from advanced_argparse import PrettySafeLoader, yaml_parser
 
-from .utils.tensorrt_support import BatchStream, EntropyCalibrator
+from .utils import BatchStream, EntropyCalibrator, check_tensorrt_health
 
 trtLogLevel = trt.Logger.Severity
 
 _TENSORRT_CFG_PATH = "config/tensorrt_cfg.yaml"
-
-
-def check_tensorrt_health() -> None:
-    import tensorrt as trt
-
-    print(f"TensorRT version: {trt.__version__}")
-    assert trt.Builder(trt.Logger()), "Tensorrt is not valid."
 
 
 def save_engine(engine: trt.ICudaEngine, path: str) -> None:
@@ -85,8 +78,8 @@ class TRTEngineBuilder:
         fp16_mode: bool = False,
         int8_mode: bool = False,
         gpu_device_id: int = 0,
+        max_batch_size: int = 1,
         calibration_set: Optional[List[Any]] = None,
-        batch_size: Optional[int] = None,
         max_image_shape: Optional[List[int]] = None,
         load_image_func: Optional[Callable] = None,
         engine_path: Optional[str] = None,
@@ -106,7 +99,7 @@ class TRTEngineBuilder:
         # config builder
         max_workspace_size = self._cfg["max_workspace_size"]
         max_workspace_size = max_workspace_size[0] << max_workspace_size[1]
-        self.builder.max_batch_size = self._cfg["max_batch_size"]
+        self.builder.max_batch_size = max_batch_size
         self.builder.max_workspace_size = max_workspace_size
 
         self.set_builder_config(**kwargs)
@@ -132,7 +125,7 @@ class TRTEngineBuilder:
             self.builder.int8_mode = int8_mode
             stream = BatchStream(
                 images=calibration_set,
-                batch_size=batch_size,
+                batch_size=self._cfg["stream_batch_size"],
                 max_image_shape=max_image_shape,
                 load_image_func=load_image_func,
                 verbose=verbose,
