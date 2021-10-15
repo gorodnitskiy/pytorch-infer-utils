@@ -38,6 +38,7 @@ class TRTEngineBuilder:
         **kwargs,
     ) -> None:
         """
+        :param use_opt_shapes: use optimal shapes config option:
         :param cfg: config with params:
             - opt_shape_dict: optimal shapes dict (minimal, average, maximal),
                 default = {'input': [[1, 3, 224, 224], [1, 3, 224, 224], [1, 3, 224, 224]]}
