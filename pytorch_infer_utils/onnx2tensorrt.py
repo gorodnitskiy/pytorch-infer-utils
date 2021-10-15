@@ -32,6 +32,7 @@ def load_engine(
 class TRTEngineBuilder:
     def __init__(
         self,
+        use_opt_shapes: bool = False,
         cfg: Optional[Dict[str, Any]] = None,
         log_level: trtLogLevel = trt.Logger.INFO,
         **kwargs,
@@ -47,6 +48,7 @@ class TRTEngineBuilder:
         :param kwargs: additional params for replace default values in cfg
         """
         check_tensorrt_health()
+        self._use_opt_shapes = use_opt_shapes
         if cfg is None:
             cfg = yaml_parser(
                 pkg_resources.resource_filename(__name__, _TENSORRT_CFG_PATH),
@@ -56,6 +58,7 @@ class TRTEngineBuilder:
                 if key in cfg:
                     cfg[key] = value
                 elif key in cfg["opt_shape_dict"]:
+                    self._use_opt_shapes = True
                     cfg["opt_shape_dict"][key] = value
 
         self._cfg = cfg
@@ -106,7 +109,7 @@ class TRTEngineBuilder:
         self.config.max_workspace_size = max_workspace_size
         profile = self.builder.create_optimization_profile()
 
-        if "opt_shape_dict" in self._cfg.keys():
+        if self._use_opt_shapes:
             for input_name, param in self._cfg["opt_shape_dict"].items():
                 min_shape = tuple(param[0][:])
                 opt_shape = tuple(param[1][:])
