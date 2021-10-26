@@ -140,7 +140,7 @@ class ONNXExporter:
         opt_onnx_path = optimize_onnx(
             onnx_path_in, onnx_path_out, **self.optimize_params
         )
-        if self._torch_outs:
+        if self._torch_outs is not None:
             check_onnx_complex(
                 opt_onnx_path, self.test_tensor, self._torch_outs
             )
@@ -153,7 +153,7 @@ class ONNXExporter:
         self, onnx_path_in: str, onnx_path_out: Optional[str] = None, **kwargs
     ) -> str:
         opt_onnx_path = optimize_onnxsim(onnx_path_in, onnx_path_out, **kwargs)
-        if self._torch_outs:
+        if self._torch_outs is not None:
             check_onnx_complex(
                 opt_onnx_path, self.test_tensor, self._torch_outs
             )
