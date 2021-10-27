@@ -70,7 +70,7 @@ class ONNXExporter:
                 pkg_resources.resource_filename(__name__, _ONNX_BASE_CFG_PATH),
                 loader=PrettySafeLoader,
             )
-            for key, value in kwargs:
+            for key, value in kwargs.items():
                 if key in cfg:
                     cfg[key] = value
                 elif key in cfg["onnx_export_params"]:
