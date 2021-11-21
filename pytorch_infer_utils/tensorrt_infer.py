@@ -105,7 +105,7 @@ class TRTWrapper:
         """
         :param onnx_path: onnx-file path, default = None
         :param trt_path: onnx-file path, default = None
-        :param gpu_device_id: gpu device id to use, default = 0
+        :param gpu_device_id: gpu device id to use, default = None
         :param intra_op_num_threads: ort_session_options.intra_op_num_threads,
             to let onnxruntime choose by itself is required 0, default = 0
         :param inter_op_num_threads: ort_session_options.inter_op_num_threads,

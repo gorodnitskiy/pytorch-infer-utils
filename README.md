@@ -90,7 +90,7 @@ pip install /path/to/pytorch_infer_utils/
       "fuse_consecutive_reduce_unsqueeze", "fuse_consecutive_squeezes",
       "fuse_consecutive_transposes", "fuse_matmul_add_bias_into_gemm",
       "fuse_pad_into_conv", "fuse_transpose_into_gemm",
-      "lift_lexical_references", "nop"
+      "lift_lexical_references", "nop",
     ]
 
 ## Export ONNX to TensorRT
@@ -130,7 +130,8 @@ pip install /path/to/pytorch_infer_utils/
 - Also, additional params for builder config ```builder.create_builder_config```
   can be put to kwargs.
 - Other params that can be used in class initialization:
-  - opt_shape_dict: optimal shapes,
+  - use_opt_shapes: use optimal shapes config option, default = False
+  - opt_shape_dict: optimal shapes, {'input_name': [<minimal shapes>, <average shapes>, <maximal shapes>]},
     default = {'input': [[1, 3, 224, 224], [1, 3, 224, 224], [1, 3, 224, 224]]}
   - max_workspace_size: max workspace size, default = [1, 30]
   - stream_batch_size: batch size for forward network during transferring to int8, default = 100
@@ -148,7 +149,7 @@ pip install /path/to/pytorch_infer_utils/
   ) -> None:
       """
       :param onnx_path: onnx-file path, required
-      :param gpu_device_id: gpu device id to use, default = 0
+      :param gpu_device_id: gpu device id to use, default = None
       :param intra_op_num_threads: ort_session_options.intra_op_num_threads,
           to let onnxruntime choose by itself is required 0, default = 0
       :param inter_op_num_threads: ort_session_options.inter_op_num_threads,
@@ -209,7 +210,7 @@ pip install /path/to/pytorch_infer_utils/
       """
       :param onnx_path: onnx-file path, default = None
       :param trt_path: onnx-file path, default = None
-      :param gpu_device_id: gpu device id to use, default = 0
+      :param gpu_device_id: gpu device id to use, default = None
       :param intra_op_num_threads: ort_session_options.intra_op_num_threads,
           to let onnxruntime choose by itself is required 0, default = 0
       :param inter_op_num_threads: ort_session_options.inter_op_num_threads,
