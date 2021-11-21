@@ -131,8 +131,8 @@ pip install /path/to/pytorch_infer_utils/
   can be put to kwargs.
 - Other params that can be used in class initialization:
   - use_opt_shapes: use optimal shapes config option, default = False
-  - opt_shape_dict: optimal shapes, {'input_name': [<minimal shapes>, <average shapes>, <maximal shapes>]},
-    default = {'input': [[1, 3, 224, 224], [1, 3, 224, 224], [1, 3, 224, 224]]}
+  - opt_shape_dict: optimal shapes, {'input_name': [minimal_shapes, average_shapes, maximal_shapes]},
+    all shapes required as [B, C, H, W], default = {'input': [[1, 3, 224, 224], [1, 3, 224, 224], [1, 3, 224, 224]]}
   - max_workspace_size: max workspace size, default = [1, 30]
   - stream_batch_size: batch size for forward network during transferring to int8, default = 100
   - cache_file: int8_mode cache filename, default = "model.trt.int8calibration"
