@@ -4,9 +4,14 @@ from typing import Any, Callable, List, Optional, Tuple
 
 import cv2
 import numpy as np
-import pycuda.autoinit
-import pycuda.driver as cuda
-import tensorrt as trt
+
+try:
+    import pycuda.autoinit
+    import pycuda.driver as cuda
+    import tensorrt as trt
+except Exception as exception:
+    print(exception)
+
 from PIL import Image
 
 
