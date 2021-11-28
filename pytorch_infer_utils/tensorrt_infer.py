@@ -1,13 +1,9 @@
 from typing import Any, List, Optional, Tuple, Union
 
 import numpy as np
-
-try:
-    import pycuda.autoinit
-    import pycuda.driver as cuda
-    import tensorrt as trt
-except Exception as exception:
-    print(exception)
+import pycuda.autoinit
+import pycuda.driver as cuda
+import tensorrt as trt
 
 from .onnx2tensorrt import TRTEngineBuilder, load_engine
 

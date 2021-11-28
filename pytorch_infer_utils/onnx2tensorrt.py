@@ -2,12 +2,7 @@ from typing import Any, Callable, Dict, List, Optional
 
 import onnx
 import pkg_resources
-
-try:
-    import tensorrt as trt
-except Exception as exception:
-    print(exception)
-
+import tensorrt as trt
 import torch
 from advanced_argparse import PrettySafeLoader, yaml_parser
 
