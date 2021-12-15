@@ -13,8 +13,8 @@ from PIL import Image
 def check_tensorrt_health() -> None:
     import tensorrt as trt
 
-    print(f"TensorRT version: {trt.__version__}")
-    assert trt.Builder(trt.Logger()), "Tensorrt is not valid."
+    print(f"[TensorRT] INFO: Use version {trt.__version__}")
+    assert trt.Builder(trt.Logger()), "TensorRT is not valid."
 
 
 def read_img(img_path: str) -> np.ndarray:
@@ -27,31 +27,20 @@ def process_img(
     img_rgb: np.ndarray,
     img_width: int = 224,
     img_height: int = 224,
-    interpolation: int = cv2.INTER_LINEAR,
+    interp: int = cv2.INTER_LINEAR,
     max_pixel_value: int = 255,
     mean_channels: Tuple[float, ...] = (0.485, 0.456, 0.406),
     std_channels: Tuple[float, ...] = (0.229, 0.224, 0.225),
 ) -> np.ndarray:
     img = cv2.resize(
-        img_rgb,
-        (img_width, img_height),
-        interpolation=interpolation,
+        img_rgb, (img_width, img_height), interpolation=interp
     )
-    img = img.astype(np.float32)
+    mean = max_pixel_value * np.array(mean_channels, dtype=np.float32)
+    scale = 1 / (max_pixel_value * np.array(std_channels, dtype=np.float32))
+    img = (img.astype(np.float32) - mean) * scale
 
-    mean = np.array(mean_channels, dtype=np.float32)
-    mean *= max_pixel_value
-
-    std = np.array(std_channels, dtype=np.float32)
-    std *= max_pixel_value
-    denominator = np.reciprocal(std, dtype=np.float32)
-
-    img -= mean
-    img *= denominator
     img = img.transpose((2, 0, 1))
-    img = np.expand_dims(img, axis=0)
     img = np.ascontiguousarray(img, dtype=img.dtype)
-
     return img
 
 
@@ -66,20 +55,19 @@ def load_img(image: Any, **kwargs) -> Any:
 class BatchStream(Iterator):
     def __init__(
         self,
-        images: List[Any],
+        calibration_set: List[Any],
         batch_size: int,
-        max_image_shape: List[int],
-        load_image_func: Optional[Callable] = None,
+        max_item_shape: List[int],
+        load_item_func: Optional[Callable] = None,
         verbose: bool = False,
     ) -> None:
         self.batch_size = batch_size
-        self.images = images
-        self.load_image_func = load_image_func
-        if self.load_image_func is None:
-            self.load_image_func = load_img
-
-        self.max_batches = np.ceil(float(len(self.images)) / self.batch_size)
-        self.shape = [batch_size] + max_image_shape
+        self.calibration_set = calibration_set
+        self.load_item_func = load_item_func
+        self.max_batches = np.ceil(
+            float(len(self.calibration_set)) / self.batch_size
+        )
+        self.shape = [batch_size] + max_item_shape
         self.max_batches = int(self.max_batches)
         self.batch = 0
         self.verbose = verbose
@@ -95,14 +83,15 @@ class BatchStream(Iterator):
         curr_batch = list()
         start = self.batch_size * self.batch
         stop = start + self.batch_size
-        alloc_images = self.images[start:stop]
-        for image in alloc_images:
-            loaded_image = self.load_image_func(image)
-            curr_batch.append(loaded_image)
+        alloc_items = self.calibration_set[start:stop]
+        for item in alloc_items:
+            if self.load_item_func:
+                item = self.load_item_func(item)
+            curr_batch.append(item)
 
         self.batch += 1
         if self.verbose:
-            print("[BatchStream] Load current batch done")
+            print(f"[BatchStream] INFO: Load batch #{self.batch}.")
         return np.ascontiguousarray(curr_batch, dtype=np.float32)
 
 

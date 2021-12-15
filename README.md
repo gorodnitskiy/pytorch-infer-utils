@@ -5,7 +5,7 @@ This package proposes simplified exporting pytorch models to ONNX and TensorRT,
 and also gives some base interface for model inference.
 
 ## To install
-```
+```shell
 git clone https://github.com/gorodnitskiy/pytorch_infer_utils.git
 pip install /path/to/pytorch_infer_utils/
 ```
@@ -54,7 +54,8 @@ pip install /path/to/pytorch_infer_utils/
   exporter = ONNXExporter()
   exporter.optimize_onnx_sim("/path/to/model.onnx", "/path/to/optimized_model.onnx")
   ```
-- Also, a method combined the above methods is available ```ONNXExporter.torch2optimized_onnx```:
+- Also, a method combined the above methods is available
+```ONNXExporter.torch2optimized_onnx```:
   ```
   from pytorch_infer_utils import ONNXExporter
 
@@ -65,14 +66,17 @@ pip install /path/to/pytorch_infer_utils/
   model.eval()
 
   exporter = ONNXExporter()
-  input_shapes = [-1, 3, -1, -1] # -1 means that is dynamic shape
+  input_shapes = [1, 3, 224, 224]
   exporter.torch2optimized_onnx(model, "/path/to/model.onnx", input_shapes)
   ```
 - Other params that can be used in class initialization:
-  - default_shapes: default shapes if dimension is dynamic, default = [1, 3, 224, 224]
+  - default_shapes: default shapes if dimension is dynamic,
+default = [1, 3, 224, 224]
   - onnx_export_params:
-    - export_params: store the trained parameter weights inside the model file, default = True
-    - do_constant_folding: whether to execute constant folding for optimization, default = True
+    - export_params: store the trained parameter weights inside the model file,
+default = True
+    - do_constant_folding: whether to execute constant folding for
+optimization, default = True
     - input_names: the model's input names, default = ["input"]
     - output_names: the model's output names, default = ["output"]
     - opset_version: the ONNX version to export the model to, default = 11
@@ -112,9 +116,10 @@ pip install /path/to/pytorch_infer_utils/
   exporter = TRTEngineBuilder()
   engine = exporter.build_engine("/path/to/model.onnx", fp16_mode=True)
   ```
-- int8_mode is available. It requires calibration_set of images as ```List[Any]```,
-  ```load_image_func``` - func to correctly read and process images,
-  ```max_image_shape``` - max image size as [C, H, W] to allocate correct size of memory:
+- int8_mode is available. It requires calibration_set of items as
+```List[Any]```, ```load_item_func``` - func to correctly read and process
+item (image), ```max_item_shape``` - max item size as [C, H, W] to allocate correct
+size of memory:
   ```
   from pytorch_infer_utils import TRTEngineBuilder
 
@@ -123,18 +128,21 @@ pip install /path/to/pytorch_infer_utils/
       "/path/to/model.onnx",
       int8_mode=True,
       calibration_set=calibration_set,
-      max_image_shape=max_image_shape,
-      load_image_func=load_image_func,
+      max_item_shape=max_item_shape,
+      load_item_func=load_item_func,
   )
   ```
-- Also, additional params for builder config ```builder.create_builder_config```
-  can be put to kwargs.
+- Also, additional params for builder config
+```builder.create_builder_config``` can be put to kwargs.
 - Other params that can be used in class initialization:
   - use_opt_shapes: use optimal shapes config option, default = False
-  - opt_shape_dict: optimal shapes, {'input_name': [minimal_shapes, average_shapes, maximal_shapes]},
-    all shapes required as [B, C, H, W], default = {'input': [[1, 3, 224, 224], [1, 3, 224, 224], [1, 3, 224, 224]]}
+  - opt_shape_dict: optimal shapes,
+{'input_name': [minimal_shapes, average_shapes, maximal_shapes]}, all shapes
+required as [B, C, H, W], default = {'input': [[1, 3, 224, 224],
+[1, 3, 224, 224], [1, 3, 224, 224]]}
   - max_workspace_size: max workspace size, default = [1, 30]
-  - stream_batch_size: batch size for forward network during transferring to int8, default = 100
+  - stream_batch_size: batch size for forward network during transferring to
+int8, default = 100
   - cache_file: int8_mode cache filename, default = "model.trt.int8calibration"
 
 ## Inference via onnxruntime on CPU and onnx_tensort on GPU
@@ -257,19 +265,46 @@ pip install /path/to/pytorch_infer_utils/
 
 ## Environment
 
-### TensorRT
-- TensorRT installing guide is [here](https://docs.nvidia.com/deeplearning/tensorrt/install-guide/index.html)
+### Docker
+- Use nvcr.io/nvidia/tensorrt:21.05-py3 image due to
+[issue](https://github.com/NVIDIA-AI-IOT/torch2trt/issues/557)
+with max_workspace_size attribute in TensorRT 8.0.0.3.
+- This image has already contained all CUDA required dependencies,
+including additional python packages.
+```shell
+cd /path/to/pytorch_infer_utils/
+docker build --tag piu .
+docker run \
+    --rm \
+    -it \
+    --user $(id -u):$(id -g) \
+    --volume </path/to/target_folder>:/workspace:rw \
+    --name piu_test \
+    --gpus '"device=0"' \
+    --entrypoint /bin/bash/ \
+    piu
+```
+
+### Manual installation
+
+#### TensorRT
+- TensorRT installation guide is
+[here](https://docs.nvidia.com/deeplearning/tensorrt/install-guide/index.html)
 - Required CUDA-Runtime, CUDA-ToolKit
-- Also, required additional python packages not included to ```setup.cfg``` (it depends upon CUDA environment version):
+- Also, required additional python packages not included to ```setup.cfg```
+(it depends upon CUDA environment version):
   - pycuda
   - nvidia-tensorrt
   - nvidia-pyindex
 
-### onnx_tensorrt
-- [onnx_tensorrt](https://github.com/onnx/onnx-tensorrt) requires cuda-runtime and tensorrt.
-- To install:
-  ```
-  git clone --depth 1 --branch 21.02 https://github.com/onnx/onnx-tensorrt.git
+#### onnx_tensorrt
+- [onnx_tensorrt](https://github.com/onnx/onnx-tensorrt) requires CUDA-Runtime
+and TensorRT.
+- Use git clone for onnx-tensorrt installation due to
+[issue](https://github.com/onnx/onnx-tensorrt/blob/e9456d57605c883cdf985e634ab483e2c1500bb1/setup.py#L5)
+with import onnx_tensorrt in onnx_tensorrt setup.py:
+  ```shell
+  git clone https://github.com/onnx/onnx-tensorrt.git
   cd onnx-tensorrt
   cp -r onnx_tensorrt /usr/local/lib/python3.8/dist-packages
   cd ..

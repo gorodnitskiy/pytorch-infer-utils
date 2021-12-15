@@ -6,3 +6,4 @@ from .tensorrt_support import (
     check_tensorrt_health,
 )
 from .timer import ReportTime, report_time_decorator
+from .yaml_parser import yaml_parser

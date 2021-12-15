@@ -2,13 +2,13 @@ from typing import Any, Dict, List, Optional
 
 import pkg_resources
 import torch
-from advanced_argparse import PrettySafeLoader, yaml_parser
 
 from .utils import (
     check_onnx,
     check_onnx_complex,
     optimize_onnx,
     optimize_onnxsim,
+    yaml_parser,
 )
 
 _ONNX_BASE_CFG_PATH = "config/onnx_cfg.yaml"
@@ -67,8 +67,7 @@ class ONNXExporter:
         """
         if cfg is None:
             cfg = yaml_parser(
-                pkg_resources.resource_filename(__name__, _ONNX_BASE_CFG_PATH),
-                loader=PrettySafeLoader,
+                pkg_resources.resource_filename(__name__, _ONNX_BASE_CFG_PATH)
             )
             for key, value in kwargs.items():
                 if key in cfg:

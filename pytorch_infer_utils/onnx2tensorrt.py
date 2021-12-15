@@ -4,9 +4,13 @@ import onnx
 import pkg_resources
 import tensorrt as trt
 import torch
-from advanced_argparse import PrettySafeLoader, yaml_parser
 
-from .utils import BatchStream, EntropyCalibrator, check_tensorrt_health
+from .utils import (
+    BatchStream,
+    EntropyCalibrator,
+    check_tensorrt_health,
+    yaml_parser,
+)
 
 trtLogLevel = trt.Logger.Severity
 
@@ -52,8 +56,7 @@ class TRTEngineBuilder:
         self._use_opt_shapes = use_opt_shapes
         if cfg is None:
             cfg = yaml_parser(
-                pkg_resources.resource_filename(__name__, _TENSORRT_CFG_PATH),
-                loader=PrettySafeLoader,
+                pkg_resources.resource_filename(__name__, _TENSORRT_CFG_PATH)
             )
             for key, value in kwargs.items():
                 if key in cfg:
@@ -64,14 +67,8 @@ class TRTEngineBuilder:
 
         self._cfg = cfg
         self.logger = trt.Logger(log_level)
-
-        # create builder and network
         self.builder = trt.Builder(self.logger)
-        explicit_batch = 1 << int(
-            trt.NetworkDefinitionCreationFlag.EXPLICIT_BATCH
-        )
-        self.network = self.builder.create_network(explicit_batch)
-        self.config = None
+        self.network = self.config = None
 
     def set_builder_config(self, **kwargs) -> None:
         self.config = self.builder.create_builder_config(**kwargs)
@@ -84,16 +81,20 @@ class TRTEngineBuilder:
         gpu_device_id: int = 0,
         max_batch_size: int = 1,
         calibration_set: Optional[List[Any]] = None,
-        max_image_shape: Optional[List[int]] = None,
-        load_image_func: Optional[Callable] = None,
+        max_item_shape: Optional[List[int]] = None,
+        load_item_func: Optional[Callable] = None,
         engine_path: Optional[str] = None,
         verbose: bool = False,
         **kwargs,
     ) -> trt.ICudaEngine:
+        explicit_batch = 1 << int(
+            trt.NetworkDefinitionCreationFlag.EXPLICIT_BATCH
+        )
+        self.network = self.builder.create_network(explicit_batch)
+
         # parse onnx
         parser = trt.OnnxParser(self.network, self.logger)
         onnx_model = onnx.load(onnx_path)
-
         if not parser.parse(onnx_model.SerializeToString()):
             error_msgs = ""
             for error in range(parser.num_errors):
@@ -128,10 +129,10 @@ class TRTEngineBuilder:
 
             self.builder.int8_mode = int8_mode
             stream = BatchStream(
-                images=calibration_set,
+                calibration_set=calibration_set,
                 batch_size=self._cfg["stream_batch_size"],
-                max_image_shape=max_image_shape,
-                load_image_func=load_image_func,
+                max_item_shape=max_item_shape,
+                load_item_func=load_item_func,
                 verbose=verbose,
             )
 
