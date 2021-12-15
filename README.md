@@ -13,7 +13,7 @@ pip install /path/to/pytorch_infer_utils/
 ## Export PyTorch model to ONNX
 - Check model for denormal weights to achieve better performance.
   Use ```load_weights_rounded_model``` func to load model with weights rounding:
-  ```
+  ```python
   from pytorch_infer_utils import load_weights_rounded_model
 
   model = ModelClass()
@@ -24,7 +24,7 @@ pip install /path/to/pytorch_infer_utils/
   )
   ```
 - Use ```ONNXExporter.torch2onnx``` method to export pytorch model to ONNX:
-  ```
+  ```python
   from pytorch_infer_utils import ONNXExporter
 
   model = ModelClass()
@@ -39,7 +39,7 @@ pip install /path/to/pytorch_infer_utils/
   ```
 - Use ```ONNXExporter.optimize_onnx``` method to optimize ONNX
   via [onnxoptimizer](https://github.com/onnx/optimizer):
-  ```
+  ```python
   from pytorch_infer_utils import ONNXExporter
 
   exporter = ONNXExporter()
@@ -48,7 +48,7 @@ pip install /path/to/pytorch_infer_utils/
 - Use ```ONNXExporter.optimize_onnx_sim``` method to optimize ONNX via
   [onnx-simplifier](https://github.com/daquexian/onnx-simplifier).
   Be careful with onnx-simplifier not to lose dynamic shapes.
-  ```
+  ```python
   from pytorch_infer_utils import ONNXExporter
 
   exporter = ONNXExporter()
@@ -56,7 +56,7 @@ pip install /path/to/pytorch_infer_utils/
   ```
 - Also, a method combined the above methods is available
 ```ONNXExporter.torch2optimized_onnx```:
-  ```
+  ```python
   from pytorch_infer_utils import ONNXExporter
 
   model = ModelClass()
@@ -100,7 +100,7 @@ optimization, default = True
 ## Export ONNX to TensorRT
 - Check TensorRT health via ```check_tensorrt_health``` func
 - Use ```TRTEngineBuilder.build_engine``` method to export ONNX to TensorRT:
-  ```
+  ```python
   from pytorch_infer_utils import TRTEngineBuilder
 
   exporter = TRTEngineBuilder()
@@ -110,7 +110,7 @@ optimization, default = True
   exporter.build_engine("/path/to/model.onnx", engine_path="/path/to/model.trt")
   ```
 - fp16_mode is available:
-  ```
+  ```python
   from pytorch_infer_utils import TRTEngineBuilder
 
   exporter = TRTEngineBuilder()
@@ -120,7 +120,7 @@ optimization, default = True
 ```List[Any]```, ```load_item_func``` - func to correctly read and process
 item (image), ```max_item_shape``` - max item size as [C, H, W] to allocate correct
 size of memory:
-  ```
+  ```python
   from pytorch_infer_utils import TRTEngineBuilder
 
   exporter = TRTEngineBuilder()
@@ -147,7 +147,7 @@ int8, default = 100
 
 ## Inference via onnxruntime on CPU and onnx_tensort on GPU
 - Base class ONNXWrapper ```__init__``` has the structure as below:
-  ```
+  ```python
   def __init__(
       self,
       onnx_path: str,
@@ -192,7 +192,7 @@ int8, default = 100
           )
   ```
 - ```ONNXWrapper.run``` method assumes the use of such a structure:
-  ```
+  ```python
   img = self._process_img_(img)
   if self.is_using_tensorrt:
       preds = self.engine.run(img)
@@ -205,7 +205,7 @@ int8, default = 100
 
 ## Inference via onnxruntime on CPU and TensorRT on GPU
 - Base class TRTWrapper ```__init__``` has the structure as below:
-  ```
+  ```python
   def __init__(
       self,
       onnx_path: Optional[str] = None,
@@ -252,7 +252,7 @@ int8, default = 100
           self.trt_session = TRTRunWrapper(trt_path)
   ```
 - ```TRTWrapper.run``` method assumes the use of such a structure:
-  ```
+  ```python
   img = self._process_img_(img)
   if self.is_using_tensorrt:
       preds = self.trt_session.run(img)
