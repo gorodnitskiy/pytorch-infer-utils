@@ -281,7 +281,7 @@ docker run \
     --volume </path/to/target_folder>:/workspace:rw \
     --name piu_test \
     --gpus '"device=0"' \
-    --entrypoint /bin/bash/ \
+    --entrypoint /bin/bash \
     piu
 ```
 
